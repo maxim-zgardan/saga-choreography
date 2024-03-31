@@ -1,7 +1,11 @@
-package com.stock.ms.controller;
+package com.inventory.ms.controller;
 
-import java.util.List;
-import java.util.Optional;
+import com.inventory.ms.dto.CustomerOrder;
+import com.inventory.ms.dto.DeliveryEvent;
+import com.inventory.ms.dto.InventoryDto;
+import com.inventory.ms.dto.PaymentEvent;
+import com.inventory.ms.entity.InventoryRepository;
+import com.inventory.ms.entity.Inventory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,19 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stock.ms.dto.CustomerOrder;
-import com.stock.ms.dto.DeliveryEvent;
-import com.stock.ms.dto.PaymentEvent;
-import com.stock.ms.dto.Stock;
-import com.stock.ms.entity.WareHouse;
-import com.stock.ms.entity.StockRepository;
 
 @RestController
 @RequestMapping("/api")
-public class StockController {
+public class InventoryController {
 
 	@Autowired
-	private StockRepository repository;
+	private InventoryRepository repository;
 
 	@Autowired
 	private KafkaTemplate<String, DeliveryEvent> kafkaTemplate;
@@ -43,20 +41,20 @@ public class StockController {
 		CustomerOrder order = p.getOrder();
 
 		try {
-			WareHouse inventory = repository.findByItem(order.getItem());
+			Inventory inventory = repository.findByItem(order.getItem());
 
 
 			if (inventory == null || inventory.getQuantity() < order.getQuantity()) {
-				System.out.println("Stock not exist so reverting the order");
-				throw new Exception("Stock not available");
+				System.out.println("Inventory not exist so reverting the order");
+				throw new Exception("Inventory not available");
 			}
 
 			inventory.setQuantity(inventory.getQuantity() - order.getQuantity());
 			repository.save(inventory);
 
-			event.setType("STOCK_UPDATED");
+			event.setType("INVENTORY_UPDATED");
 			event.setOrder(p.getOrder());
-			kafkaTemplate.send("new-stock", event);
+			kafkaTemplate.send("new-inventory", event);
 		} catch (Exception e) {
 			PaymentEvent pe = new PaymentEvent();
 			pe.setOrder(order);
@@ -66,16 +64,16 @@ public class StockController {
 	}
 
 	@PostMapping("/addItems")
-	public void addItems(@RequestBody Stock stock) {
-		WareHouse items = repository.findByItem(stock.getItem());
+	public void addItems(@RequestBody InventoryDto inventoryDto) {
+		Inventory items = repository.findByItem(inventoryDto.getItem());
 
 		if (items != null) {
-			items.setQuantity(stock.getQuantity() + items.getQuantity());
+			items.setQuantity(inventoryDto.getQuantity() + items.getQuantity());
 			repository.save(items);
 		} else {
-			WareHouse i = new WareHouse();
-			i.setItem(stock.getItem());
-			i.setQuantity(stock.getQuantity());
+			Inventory i = new Inventory();
+			i.setItem(inventoryDto.getItem());
+			i.setQuantity(inventoryDto.getQuantity());
 			repository.save(i);
 		}
 	}

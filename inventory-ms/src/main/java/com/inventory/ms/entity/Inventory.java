@@ -1,4 +1,4 @@
-package com.stock.ms.entity;
+package com.inventory.ms.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class WareHouse {
+public class Inventory {
 
 	@Id
 	@GeneratedValue

@@ -1,4 +1,4 @@
-package com.stock.ms.dto;
+package com.inventory.ms.dto;
 
 import lombok.Getter;
 import lombok.Setter;

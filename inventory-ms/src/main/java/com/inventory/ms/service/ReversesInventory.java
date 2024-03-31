@@ -1,5 +1,9 @@
-package com.stock.ms.service;
+package com.inventory.ms.service;
 
+import com.inventory.ms.dto.DeliveryEvent;
+import com.inventory.ms.dto.PaymentEvent;
+import com.inventory.ms.entity.InventoryRepository;
+import com.inventory.ms.entity.Inventory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -7,28 +11,24 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stock.ms.dto.DeliveryEvent;
-import com.stock.ms.dto.PaymentEvent;
-import com.stock.ms.entity.WareHouse;
-import com.stock.ms.entity.StockRepository;
 
 @RestController
-public class ReversesStock {
+public class ReversesInventory {
 
 	@Autowired
-	private StockRepository repository;
+	private InventoryRepository repository;
 
 	@Autowired
 	private KafkaTemplate<String, PaymentEvent> kafkaTemplate;
 
-	@KafkaListener(topics = "reversed-stock", groupId = "stock-group")
+	@KafkaListener(topics = "reversed-inventory", groupId = "inventory-group")
 	public void reverseStock(String event) {
-		System.out.println("Inside reverse stock for order "+event);
+		System.out.println("Inside reverse inventory for order "+event);
 		
 		try {
 			DeliveryEvent deliveryEvent = new ObjectMapper().readValue(event, DeliveryEvent.class);
 
-			WareHouse inv = this.repository.findByItem(deliveryEvent.getOrder().getItem());
+			Inventory inv = this.repository.findByItem(deliveryEvent.getOrder().getItem());
 
 			inv.setQuantity(inv.getQuantity() + deliveryEvent.getOrder().getQuantity());
 			repository.save(inv);

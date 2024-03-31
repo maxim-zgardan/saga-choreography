@@ -1,11 +1,11 @@
-package com.stock.ms.dto;
+package com.inventory.ms.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Stock {
+public class InventoryDto {
 
 	private String item;
 

@@ -23,7 +23,7 @@ public class DeliveryController {
 	@Autowired
 	private KafkaTemplate<String, DeliveryEvent> kafkaTemplate;
 
-	@KafkaListener(topics = "new-stock", groupId = "stock-group")
+	@KafkaListener(topics = "new-inventory", groupId = "inventory-group")
 	public void deliverOrder(String event) throws JsonMappingException, JsonProcessingException {
 		System.out.println("Inside ship order for order "+event);
 		
@@ -39,20 +39,20 @@ public class DeliveryController {
 			shipment.setAddress(order.getAddress());
 			shipment.setOrderId(order.getOrderId());
 
-			shipment.setStatus("success");
+			shipment.setStatus("SUCCESS");
 
 			repository.save(shipment);
 		} catch (Exception e) {
 			shipment.setOrderId(order.getOrderId());
-			shipment.setStatus("failed");
+			shipment.setStatus("FAILED");
 			repository.save(shipment);
 
 			System.out.println(order);
 
 			DeliveryEvent reverseEvent = new DeliveryEvent();
-			reverseEvent.setType("STOCK_REVERSED");
+			reverseEvent.setType("INVENTORY_REVERSED");
 			reverseEvent.setOrder(order);
-			kafkaTemplate.send("reversed-stock", reverseEvent);
+			kafkaTemplate.send("reversed-inventory", reverseEvent);
 		}
 	}
 }

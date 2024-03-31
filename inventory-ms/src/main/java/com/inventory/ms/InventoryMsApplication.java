@@ -1,13 +1,13 @@
-package com.stock.ms;
+package com.inventory.ms;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StockMsApplication {
+public class InventoryMsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StockMsApplication.class, args);
+		SpringApplication.run(InventoryMsApplication.class, args);
 	}
 
 }

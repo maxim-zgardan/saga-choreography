@@ -15,7 +15,7 @@ Content-Type: application/json
   "address": "Some address",
   "item": "book",
   "paymentMode": "Credit card",
-  "quantity": 5,
+  "quantity": 55,
   "amount": 123
 }
 
