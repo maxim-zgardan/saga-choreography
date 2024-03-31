@@ -10,7 +10,7 @@ This is the business use case.
 Let's say there are four different microservices to take care of this flow.
 An order microservice which handles the customer orders.
 A payment microservice which handles payments for the orders.
-An inventoryDto microservice which updates the inventoryDto once orders are placed.
+An inventory microservice which updates the inventoryDto once orders are placed.
 A delivery microservice which deals with delivering the orders.
 
 **Implementation approach**
@@ -18,7 +18,7 @@ we will go with this design to understand SAGA design pattern.
 Now let's consider the below functions in each microservice when a customer places an order:
 1. createOrder() - Oder microservice
 2. procressPayment() - Payment microservice
-3. updateStock() - Stock microservice
+3. updateInventory() - Inventory microservice
 4. deliverOrder() - Delivery Microservice
    When a customer places an order and doOrder(), doPayment() methods succeed and updateStock() method
    fails then the system will have a wrong inventoryDto information. And the customer won't get her order deliver.
@@ -29,7 +29,7 @@ Now let's consider the below functions in each microservice when a customer plac
    Here are the compensating tasks
 1. reverseOrder() - Order microservice
    2.reversePayment() - Payment microservice
-   3.reverseStock() - Stock microservice
+   3.reverseInventory() - Inventory microservice
 
 
 Flow of Order Management microservice
