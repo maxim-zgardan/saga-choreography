@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sc</groupId>
-	<artifactId>inventoryDto-ms</artifactId>
+	<artifactId>inventory-ms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>inventoryDto-ms</name>
 	<description>Demo project for Spring Boot</description>
